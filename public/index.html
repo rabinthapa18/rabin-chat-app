@@ -3,10 +3,17 @@
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>chat app</title>
-        <script src="/socket.io/socket.io.js"></script>
-        <script src="./js/chat.js"></script>
     <body>
         <div class="main-content">
-            <p>Chat app</p>
+            <p>
+                Chat App
+                <form id="messageForm">
+                    <input type="text" placeholder="Enter your message here" name="message"/>
+                    <button>send</button>
+                </form>
+                <button id="send-location">Share your location</button>
+            </p>
+            <script src="/socket.io/socket.io.js"></script>
+            <script src="./js/chat.js"></script>
     </body>
 </html>
