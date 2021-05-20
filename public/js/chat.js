@@ -16,6 +16,7 @@ const $messages = document.querySelector('#messages')
 //templates
 const messageTemplate = document.querySelector('#message-template').innerHTML
 const locationTemplate = document.querySelector('#location-template').innerHTML
+const sidebarTemplate = document.querySelector('#sidebar-template').innerHTML
 
 
 //options
@@ -27,24 +28,34 @@ socket.on('messageToAll', (message) => {
     console.log(message);
 
     const html = Mustache.render(messageTemplate, {
-        username: username,
+        username: message.username,
         message: message.text,
         createdAt: moment(message.createdAt).format('hh:mm a')
     })
     $messages.insertAdjacentHTML('beforeend', html)
+    autoscroll()
 })
 
 
 // --- printing location message
 socket.on('locationMessage', (link) => {
     const html = Mustache.render(locationTemplate, {
-        username: username,
+        username: link.username,
         createdAt: moment(link.createdAt).format('hh:mm a'),
         link: link.link
     })
     $messages.insertAdjacentHTML('beforeend', `<b>${html}</b>`)
+    autoscroll()
 })
 
+
+socket.on('roomData', ({ room, users }) => {
+    const html = Mustache.render(sidebarTemplate, {
+        room,
+        users
+    })
+    document.querySelector('#sidebar').innerHTML = html
+})
 
 
 // --- sending message to others
@@ -96,4 +107,9 @@ $locationButton.addEventListener('click', () => {
 
 
 // --- joining room
-socket.emit('join', { username, room })
+socket.emit('join', { username, room }, (error) => {
+    if (error) {
+        alert(error)
+        location.href = '/'
+    }
+})
