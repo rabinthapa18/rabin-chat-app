@@ -5,6 +5,7 @@ const http = require('http')
 const express = require('express')
 const socketio = require('socket.io')
 const Filter = require('bad-words')
+const { generateMessage, generateLocationMessage } = require('./utils/messages')
 
 const app = express()
 const server = http.createServer(app)
@@ -21,10 +22,14 @@ app.use(express.static(publicDirPath))
 io.on('connection', (socket) => {
     console.log('New web-socket connection');
 
+    // --- joining room
+    socket.on('join', ({ username, room }) => {
+        socket.join(room)
 
-    // --- message to all clients when a user joins and welcome message to new client
-    socket.emit('messageToAll', 'Welcome user')
-    socket.broadcast.emit('messageToAll', 'A new user has joined!')
+        // --- message to all clients when a user joins and welcome message to new client
+        socket.emit('messageToAll', generateMessage(`Welcome ${username}`))
+        socket.broadcast.to(room).emit('messageToAll', generateMessage(`${username} has joind the chat!`))
+    })
 
 
     // --- sending message to others
@@ -35,20 +40,20 @@ io.on('connection', (socket) => {
             return callback('Using of foul words are not allowed.')
         }
 
-        io.emit('messageToAll', message)
+        io.emit('messageToAll', generateMessage(message))
         callback()
     })
 
 
     // --- sending message when a client disconnects
-    socket.on('disconnect', () => {
-        io.emit('messageToAll', 'A user has left!')
+    socket.on('disconnect', ({ username }) => {
+        io.emit('messageToAll', generateMessage(`${username} has left!`))
     })
 
 
     // --- sending location to others
     socket.on('sendLocation', (location, callback) => {
-        io.emit('locationMessage', `https://www.google.com/maps/@${location.latitude},${location.longitude}`)
+        io.emit('locationMessage', generateLocationMessage(`https://www.google.com/maps/@${location.latitude},${location.longitude}`))
         callback()
     })
 })

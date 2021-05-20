@@ -18,26 +18,29 @@ const messageTemplate = document.querySelector('#message-template').innerHTML
 const locationTemplate = document.querySelector('#location-template').innerHTML
 
 
+//options
+const { username, room } = Qs.parse(location.search, { ignoreQueryPrefix: true })
+
+
 // --- printing messages to all clients
 socket.on('messageToAll', (message) => {
     console.log(message);
 
     const html = Mustache.render(messageTemplate, {
-        message
+        username: username,
+        message: message.text,
+        createdAt: moment(message.createdAt).format('hh:mm a')
     })
-    if (message === 'A user has left!' || message === 'A new user has joined!') {
-        $messages.insertAdjacentHTML('beforeend', `<i>${html}</i>`)
-    }
-    else {
-        $messages.insertAdjacentHTML('beforeend', html)
-    }
+    $messages.insertAdjacentHTML('beforeend', html)
 })
 
 
 // --- printing location message
 socket.on('locationMessage', (link) => {
     const html = Mustache.render(locationTemplate, {
-        link
+        username: username,
+        createdAt: moment(link.createdAt).format('hh:mm a'),
+        link: link.link
     })
     $messages.insertAdjacentHTML('beforeend', `<b>${html}</b>`)
 })
@@ -90,3 +93,7 @@ $locationButton.addEventListener('click', () => {
         })
     })
 })
+
+
+// --- joining room
+socket.emit('join', { username, room })

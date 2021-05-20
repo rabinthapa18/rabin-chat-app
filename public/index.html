@@ -4,38 +4,30 @@
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>chat app</title>
+        <link rel="icon" href="./img/favicon.png" />
+        <link rel="stylesheet" href="./css/styles.css" />
     </head>
     <body>
-        Chat App
-        <div id="messages"></div>
-        <form id="messageForm">
-            <input
-                type="text"
-                placeholder="Enter your message here"
-                name="message"
-            />
-            <button>send</button>
-        </form>
-        <button id="send-location">Share your location</button>
-
-        <script id="message-template" type="text/html">
-            <div>
-                <p>{{message}}</p>
+        <div class="centered-form">
+            <div class="centered-form___box">
+                <form action="./chat.html">
+                    <label>Display name</label>
+                    <input
+                        type="text"
+                        name="username"
+                        placeholder="Enter your name here"
+                        required
+                    />
+                    <label>Room Name</label>
+                    <input
+                        type="text"
+                        name="room"
+                        placeholder="Room Name"
+                        required
+                    />
+                    <button>Join</button>
+                </form>
             </div>
-        </script>
-
-        <script id="location-template" type="text/html">
-            <div>
-                <p>
-                    <a href="{{link}}" target="_blank"> My Current location</a>
-                </p>
-            </div>
-        </script>
-
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/3.0.1/mustache.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/qs/6.6.0/qs.min.js"></script>
-        <script src="/socket.io/socket.io.js"></script>
-        <script src="./js/chat.js"></script>
+        </div>
     </body>
 </html>
